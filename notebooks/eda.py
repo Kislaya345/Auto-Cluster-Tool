@@ -35,11 +35,11 @@ for col in processed_dataframe_cols:
 
 # Feature Distribution Plot
 
-# feature_dist_scatter_plot(dataframe=processed_dataframe, feature_names=processor.feature_columns, bins=20)
+feature_dist_scatter_plot(dataframe=processed_dataframe, feature_names=processor.feature_columns, bins=20)
 
 # Correlation plot
 
-# feature_correlation_plot(processor.X_dataframe.corr(), annot=True)
+feature_correlation_plot(processor.X_dataframe.corr(), annot=True)
 
 # PCA EDA
 
@@ -66,19 +66,10 @@ class PCA_Plot:
             print(f"Top Driver for {pc}: {driver}")
             
         if n_selected == 2:
-        # No self._plot_2d, just the imported function name
+
             _plot_2d(data_pca, pca_viz, top_drivers, processor)
         elif n_selected >= 3: 
-        # Use data_pca[:, :3] to ensure you only pass 3 columns for 3D
+
             _plot_3d(data_pca[:, :3], n_selected, top_drivers, processor)
 
         _scree_plot(pca_viz.explained_variance_ratio_, n_selected)
-        # 4. Scree Plot (Crucial for n_components=0.95)
-        plt.figure(figsize=(8, 4))
-        cumulative_var = np.cumsum(pca_viz.explained_variance_ratio_)
-        plt.plot(range(1, n_selected + 1), cumulative_var, marker='o', linestyle='--')
-        plt.axhline(y=0.95, color='r', linestyle=':')
-        plt.title("Cumulative Explained Variance")
-        plt.xlabel("Number of Components")
-        plt.ylabel("Variance Explained")
-        plt.show()
