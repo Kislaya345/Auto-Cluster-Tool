@@ -38,8 +38,3 @@ class AgglomerativeClustering_:
         evaluator = Evaluator(dataset=X_dataframe, labels=self.labels)
         evaluation = evaluator.evaluate()
         return evaluation
-
-# pipeline = AgglomerativeClustering_(n_clusters=3)
-# pipeline.fit_predict(dataset=X_dataframe)
-# result = pipeline.evaluate()
-# print(result)
