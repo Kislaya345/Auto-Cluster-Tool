@@ -1,5 +1,6 @@
 import csv
 import sys
+import os
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import RobustScaler, OneHotEncoder, StandardScaler
@@ -7,23 +8,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 
-correct_root = r'C:\Users\kisla\OneDrive\Desktop\Auto Cluster Tool'
-
-if correct_root not in sys.path:
-    sys.path.insert(0, correct_root)
-    
-from data.load import Load_Data
-
-load_dataset = Load_Data()
-dataset_path = 'C:/Users/kisla/Downloads/archive/wine_dataset.csv'
-load_dataset.load_data(path=dataset_path)
-dataset = load_dataset.dataset
-
 class Preprocess:
     def __init__(self, dataset, path):
-        self.dataset = dataset
+        self.dataset = dataset #
         self.dataframe = None
-        self.path = path
+        self.path = path #
         self.feature_columns = None
         self.target = None
         self.X_dataframe = None
@@ -72,11 +61,18 @@ class Preprocess:
         self.numeric_cols = self.X_dataframe.select_dtypes(include=['int64', 'float64']).columns.tolist()
         self.categorical_cols = self.X_dataframe.select_dtypes(include=['object', 'bool']).columns.tolist()
         
+        self.feature_columns = self.X_dataframe.columns.tolist()
+        for col in self.X_dataframe.select_dtypes(include=[np.number]).columns:
+            Q1 = self.X_dataframe[col].quantile(0.25)
+            Q3 = self.X_dataframe[col].quantile(0.75)
+            IQR = Q3 - Q1
+            self.X_dataframe[col] = self.X_dataframe[col].clip(lower=Q1 - 1.5 * IQR, upper=Q3 + 1.5 * IQR)
+        
         # Pipeline for Imputation and Scaling
         numeric_processor = Pipeline(steps=[
             ('imputer', SimpleImputer(strategy='mean')),
-            ('scaler', RobustScaler())
-            # ('scaler', StandardScaler())
+            # ('scaler', RobustScaler())
+            ('scaler', StandardScaler())
         ])
 
         # Impute -> Encode kind of flow
@@ -93,33 +89,13 @@ class Preprocess:
             verbose_feature_names_out=False
         )
         
-        self.processed_dataset = self.preprocessor.fit_transform(dataset)
+        self.processed_dataset = self.preprocessor.fit_transform(self.X_dataframe)
 
         self.processed_df = pd.DataFrame(
             self.processed_dataset, 
             columns=self.preprocessor.get_feature_names_out()
         )
-    
-        # Getting features that contains outliers
-    
-        outlier_info = {}
         
-        for col in self.feature_columns:
-            Q1 = self.X_dataframe[col].quantile(0.25)
-            Q3 = self.X_dataframe[col].quantile(0.75)
-            IQR = Q3 - Q1
-            
-            lower_bound = Q1 - 1.5 * IQR
-            upper_bound = Q3 + 1.5 * IQR
-            
-            self.X_dataframe[col] = self.X_dataframe[col].clip(lower=lower_bound, upper=upper_bound)
-            outliers = self.X_dataframe[(self.X_dataframe[col] < lower_bound) | (self.X_dataframe[col] > upper_bound)]
-
-            if not outliers.empty:
-                outlier_info[col] = len(outliers)
-                
-        print("Features with outliers:", list(outlier_info.keys()))
-        
-        print(f"Preprocessing complete. Final shape: {self.processed_df.shape}")
+        self.X_dataframe = self.processed_df
         
         return self.processed_df

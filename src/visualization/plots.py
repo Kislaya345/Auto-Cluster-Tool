@@ -67,3 +67,4 @@ def _scree_plot(explained_variance_ratio, n_selected):
     plt.ylabel("Variance Explained")
     plt.grid(True, alpha=0.3)
     plt.show()
+
