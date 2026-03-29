@@ -19,34 +19,33 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from data.load import Load_Data
-from data.processed_data import Preprocess
 from src.visualization.plots import feature_dist_scatter_plot, feature_correlation_plot, _plot_2d, _plot_3d, _scree_plot
 
-data_loader = Load_Data()
-dataframe = data_loader.load_data(path='C:/Users/kisla/Downloads/archive/wine_dataset.csv')
-processor = Preprocess(dataset=dataframe, path=data_loader.path)
-processed_dataframe = processor.preprocess()
-processed_dataframe_cols = processor.feature_columns
 
-for col in processed_dataframe_cols:
-    print(f"\nDataset Median for {col} is {processed_dataframe[col].median()}")
-    print(f"Dataset describe for {col} is \n{processed_dataframe[col].describe()}")
+class EDA:
+    def __init__(self, X_dataframe=None, processed_dataframe=None, processed_dataframe_cols=None, feature_names=None):
+        self.processed_dataframe_cols = processed_dataframe_cols
+        self.X_dataframe = X_dataframe
+        self.processed_dataframe = processed_dataframe
+        self.feature_names = feature_names
+        
+    def run(self):
+        for col in self.processed_dataframe_cols:
+            print(f"\nDataset Median for {col} is {self.processed_dataframe[col].median()}")
+            print(f"Dataset description for {col} is \n{self.processed_dataframe[col].describe()}")
 
-# Feature Distribution Plot
+        # Feature Distribution Plot
+        feature_dist_scatter_plot(dataframe=self.X_dataframe, feature_names=self.feature_names, bins=20)
 
-feature_dist_scatter_plot(dataframe=processed_dataframe, feature_names=processor.feature_columns, bins=20)
+        # Correlation plot
+        feature_correlation_plot(self.X_dataframe.corr(), annot=True)
 
-# Correlation plot
-
-feature_correlation_plot(processor.X_dataframe.corr(), annot=True)
-
-# PCA EDA
 
 class PCA_Plot:
-    def __init__(self, processed_dataframe, n_components):
+    def __init__(self, processed_dataframe, n_components, processor=None):
         self.processed_dataframe = processed_dataframe
         self.n_components = n_components
+        self.processor = processor
         
     def fit(self):
         pca_viz = PCA(n_components=self.n_components)
@@ -58,7 +57,7 @@ class PCA_Plot:
         loadings = pd.DataFrame(
             pca_viz.components_.T,
             columns=pc_names,
-            index=processor.feature_columns
+            index=self.processor.feature_columns
         )
         
         top_drivers = {pc: loadings[pc].abs().idxmax() for pc in pc_names}
@@ -67,9 +66,9 @@ class PCA_Plot:
             
         if n_selected == 2:
 
-            _plot_2d(data_pca, pca_viz, top_drivers, processor)
+            _plot_2d(data_pca, pca_viz, top_drivers, self.processor)
         elif n_selected >= 3: 
 
-            _plot_3d(data_pca[:, :3], n_selected, top_drivers, processor)
+            _plot_3d(data_pca[:, :3], n_selected, top_drivers, self.processor)
 
         _scree_plot(pca_viz.explained_variance_ratio_, n_selected)
