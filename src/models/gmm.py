@@ -21,15 +21,15 @@ from src.features.feature_engineering import Feature_Engineer
 
 from sklearn.datasets import make_blobs
 
-loader = Load_Data()
-dataset = loader.load_data(path='C:/Users/kisla/Downloads/archive/wine_dataset.csv')
-raw_data = loader.dataset
-X, y = make_blobs(n_samples=300, centers=3, cluster_std=0.8, random_state=42)
-processor = Preprocess(dataset=raw_data, path=loader.path)
-processed_dataframe = processor.preprocess()
-feature_engine = Feature_Engineer(data=processed_dataframe, dataframe_cols=processor.feature_columns)
-X_dataframe = feature_engine.perform()
-feature_columns = feature_engine.feature_engineered_df_cols
+# loader = Load_Data()
+# dataset = loader.load_data(path='C:/Users/kisla/Downloads/archive/wine_dataset.csv')
+# raw_data = loader.dataset
+# X, y = make_blobs(n_samples=300, centers=3, cluster_std=0.8, random_state=42)
+# processor = Preprocess(dataset=raw_data, path=loader.path)
+# processed_dataframe = processor.preprocess()
+# feature_engine = Feature_Engineer(data=processed_dataframe, dataframe_cols=processor.feature_columns)
+# X_dataframe = feature_engine.perform()
+# feature_columns = feature_engine.feature_engineered_df_cols
 
 class gmm_pipeline:
     def __init__(self, data):
@@ -94,8 +94,3 @@ class gmm_pipeline:
         plt.legend()
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.show()
-    
-gmm_pipe = gmm_pipeline(data=X_dataframe)
-gmm_pipe.fit_predict()
-gmm_pipe.evaluate()
-gmm_pipe.plot()
