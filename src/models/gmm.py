@@ -1,10 +1,7 @@
 from sklearn.mixture import GaussianMixture
 from sklearn.decomposition import PCA
-from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 import numpy as np
-
-from sklearn.datasets import make_blobs
 
 import sys
 import os
