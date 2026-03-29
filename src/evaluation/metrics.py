@@ -7,6 +7,12 @@ class Evaluator:
         self.result = None
         
     def evaluate(self):
+        unique_labels = set(self.labels) - {-1}  # excluding noise
+    
+        if len(unique_labels) < 2:
+            print(f"Skipping evaluation — only {len(unique_labels)} cluster found")
+            return None
+        
         self.result = {}
         # Adding silhouette_score to dictionary
         self.result['Silhouette_Score'] = silhouette_score(self.dataset, self.labels)
