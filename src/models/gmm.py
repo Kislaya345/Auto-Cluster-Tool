@@ -32,13 +32,13 @@ class gmm_pipeline:
             gmm.fit(self.dataset)
             bic = gmm.bic(self.dataset)
             aic = gmm.aic(self.dataset)
-            print(f"k={k} | BIC={bic:.2f} | AIC={aic:.2f}")
+            # print(f"k={k} | BIC={bic:.2f} | AIC={aic:.2f}")
             
             if bic < best_bic:
                 best_bic = bic
                 best_k = k
         
-        print(f"Optimal components: {best_k}")
+        print(f"Optimal components (k): {best_k}")
         return best_k
     
     def fit_predict(self):

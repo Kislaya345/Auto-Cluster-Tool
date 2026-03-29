@@ -1,4 +1,6 @@
 from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+import matplotlib.pyplot as plt
 
 import sys
 import os
@@ -27,3 +29,13 @@ class AgglomerativeClustering_:
         evaluator = Evaluator(dataset=self.dataset, labels=self.labels)
         evaluation = evaluator.evaluate()
         return evaluation
+    
+    def plot_dendogram(self):
+        linked = linkage(self.dataset, method='ward')
+        
+        plt.figure(figsize=(12, 6))
+        dendrogram(linked)
+        plt.title("Agglomerative Clustering Dendrogram")
+        plt.xlabel("Sample Index")
+        plt.ylabel("Distance")
+        plt.show()
