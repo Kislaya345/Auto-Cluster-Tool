@@ -1,12 +1,8 @@
-# Algorithm profiler: analyzes the data and tells which algorithm to use: 
-# - Run density sweep -> if clean eps window exists -> flag dbscan
-# - check cluster tendancy (hopkins statistic) -> is data even clusterable
-# - Default to GMM if not clear density structure
-
 import sys
 import os
 import numpy as np
 
+from sklearn.neighbors import NearestNeighbors
 from sklearn.cluster import DBSCAN
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,24 +10,11 @@ project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
 
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
-    
-from src.evaluation.metrics import Evaluator
-from data.load import Load_Data
-from data.processed_data import Preprocess
-from src.features.feature_engineering import Feature_Engineer
-from sklearn.neighbors import NearestNeighbors
 
-from sklearn.datasets import make_blobs
-
-loader = Load_Data()
-dataset = loader.load_data(path='C:/Users/kisla/Downloads/archive/wine_dataset.csv')
-raw_data = loader.dataset
-X, y = make_blobs(n_samples=300, centers=3, cluster_std=0.8, random_state=42)
-processor = Preprocess(dataset=raw_data, path=loader.path)
-processed_dataframe = processor.preprocess()
-feature_engine = Feature_Engineer(data=processed_dataframe, dataframe_cols=processor.feature_columns)
-X_dataframe = feature_engine.perform()
-feature_columns = feature_engine.feature_engineered_df_cols
+from src.models.kmeans import KMeansClustering_
+from src.models.gmm import gmm_pipeline
+from src.models.agglomerative import AgglomerativeClustering_
+from src.models.dbscan import DBSCAN_pipeline
 
 def has_clean_eps_window(X, min_samples=4, target_cluster=(2,4), window_size = 3):
     stable_count = 0
@@ -78,4 +61,59 @@ def hopkins_stats(X, sample_ratio = 0.1):
     u = np.sum(random_distances)
     w = np.sum(real_distances)
     
-    return u / (u + w)
+    return u / (u + w)\
+        
+class Auto_Cluster: 
+    def __init__(self, dataset):
+         self.data = dataset
+         self.hopkins_stats = hopkins_stats(self.data)
+         self.density_sweep_result = has_clean_eps_window(self.data)
+         self.scores = {}
+         
+    def best_model(self):
+        valid_scores = {k: v for k, v in self.scores.items() if v is not None}
+        
+        for model in valid_scores:
+            silhouette = valid_scores[model]['Silhouette_Score']
+            dav_b = valid_scores[model]['Davies_Bouldin_Score']
+            
+            valid_scores[model]['combined_scores'] = silhouette - (dav_b / 10)
+            
+        best = max(valid_scores, key=lambda k: valid_scores[k]['combined_scores'])
+        
+        print("-------------------- Model Comparison --------------------")
+        for model, v in valid_scores.items():
+            marker = " <-- BEST" if model == best else ""
+            print(f"Model: {model} | Silhouette Score: {v['Silhouette_Score']:.4f} | Davies Bouldin Score: {v['Davies_Bouldin_Score']:.4f}{marker}")
+            
+        return best 
+         
+    def model_selector(self):
+        if self.hopkins_stats < 0.6:
+            print("This given dataset has not any clusters, try another datasets for ideal results")
+        else:
+            if self.density_sweep_result:
+                print("The DBSCAN is running here")
+                dbscan = DBSCAN_pipeline(dataset=self.data)
+                dbscan.fit_predict()
+                self.scores['DBSCAN'] = dbscan.evaluate()
+            
+            gmm_model = gmm_pipeline(data=self.data)
+            best_k = gmm_model._find_optimal_components()
+            gmm_model.fit_predict()
+            result_gmm = gmm_model.evaluate()
+            self.scores['GMM'] = result_gmm
+        
+            kmeans_model = KMeansClustering_(k=best_k, dataset=self.data)
+            kmeans_model.fit()
+            result_km = kmeans_model.evaluate()
+            self.scores['K-Means'] = result_km
+            
+            agglomerative_model = AgglomerativeClustering_(n_clusters=best_k, dataset=self.data)
+            agglomerative_model.fit_predict()
+            result_agg = agglomerative_model.evaluate()
+            self.scores['Agglomerative'] = result_agg
+            
+        print(self.scores)
+        
+        self.best_model()
