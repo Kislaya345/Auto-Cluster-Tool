@@ -43,43 +43,9 @@ class Feature_Engineer:
         else: 
             print("No skewness in the data")
                 
-        # fixing correlation
-        corr = self.data.corr(method='pearson').abs()
-        upper = corr.where(np.triu(np.ones(corr.shape), k=1).astype(bool))
-        # Finding pair with highest correlation
-        high_corr_pairs = [column for column in upper.columns if any(upper[column] > 0.85)]
-            
-        # if high_corr_pairs: 
-        #     print(f"Merging high correlated features: {high_corr_pairs}")
-        #     self.data['Correlated_feature_mean'] = self.data[high_corr_pairs].mean(axis=1)
-        #     self.data.drop(columns=high_corr_pairs[1::2], inplace=True)    
-            
-        # else: 
-            # print("No significant multi column found")
-            
-        # Distribution Flagging and Feature Transform
-        clump_threshold=0.5, 
-        bimodal_kurt_threshold=-0.8
         numeric_cols = self.data.select_dtypes(include=[np.number]).columns
             
         for col in numeric_cols:
-        #     # Identifying clumping (variance > threshold)
-        #     top_val_freq = self.data[col].value_counts(normalize=True).iloc[0]
-        #     if top_val_freq > clump_threshold:
-        #             mode_val = self.data[col].mode()[0]
-        #             # Create Flag: 1 if in the clump, 0 otherwise
-        #             self.data[f'{col}_is_clump'] = (self.data[col] == mode_val).astype(float)*0.1
-        #             # print(f"Flagged Clumping in '{col}' at value {mode_val}")
-
-        #     # Identifying bimodality (Negative Kurtosis indicates two peaks/flatness)
-        #     if self.data[col].kurt() < bimodal_kurt_threshold:
-        #         # Create a Threshold Flag based on the median
-        #         median_val = self.data[col].median()
-        #         self.data[f'{col}_is_high_peak'] = (self.data[col] > median_val).astype(float)*0.1
-        #         # print(f"Flagged Bimodality in '{col}'")
-
-            # Transform and Replace
-            # Use Yeo-Johnson to 'smooth' the distribution for K-Means
             scaler = StandardScaler()
             self.data[col] = scaler.fit_transform(self.data[[col]])
         
