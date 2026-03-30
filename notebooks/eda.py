@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.visualization.plots import feature_dist_scatter_plot, feature_correlation_plot, _plot_2d, _plot_3d, _scree_plot
+from src.visualization.plots import feature_dist_scatter_plot, feature_correlation_plot
 
 class EDA:
     def __init__(self, X_dataframe=None, feature_names=None):
