@@ -63,24 +63,31 @@ Auto-Cluster-Tool/
 ## Installation
  
 1. Clone the repository
+```markdown
 git clone https://github.com/yourusername/auto-cluster-tool.git
 cd auto-cluster-tool
- 
+ ```
+
 2. Create a virtual environment
+```markdown
 python -m venv venv
 venv\Scripts\activate        # Windows
 source venv/bin/activate     # Mac/Linux
- 
+```
+
 3. Install dependencies
+```markdown
 pip install -r requirements.txt
+```
 
 ## Usage
  
 1. Add your CSV file anywhere on your system
 2. Update the path in main.py:
- 
+```markdown
 if __name__ == "__main__":
     main(path='path/to/your/dataset.csv', show_eda=True)
+```
 3. Run:
 python main.py
  
