@@ -33,8 +33,9 @@ Input CSV → Load & Validate → EDA → Preprocessing → Feature Engineering
 | matplotlib / seaborn | Visualization |
 | kneed | Automatic knee detection for DBSCAN |
 
+
 ## Project Structure
- 
+```markdown 
 Auto-Cluster-Tool/
 ├── data/
 │   ├── load.py               # CSV loading and validation
@@ -56,7 +57,8 @@ Auto-Cluster-Tool/
 │       └── plots.py
 ├── main.py
 ├── requirements.txt
-└── REA
+└── README.md
+```
 
 ## Installation
  
