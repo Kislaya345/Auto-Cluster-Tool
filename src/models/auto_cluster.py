@@ -61,7 +61,7 @@ def hopkins_stats(X, sample_ratio = 0.1):
     u = np.sum(random_distances)
     w = np.sum(real_distances)
     
-    return u / (u + w)\
+    return u / (u + w)
         
 class Auto_Cluster: 
     def __init__(self, dataset):
@@ -95,9 +95,12 @@ class Auto_Cluster:
         pipelines = {}
         
         if self.hopkins_stats < 0.6:
+            print(f"Hopkins_stats = {self.hopkins_stats}")
             print("This given dataset has not any clusters, try another datasets for ideal results")
         else:
+            print(f"Hopkins_stats = {self.hopkins_stats}")
             if self.density_sweep_result:
+                print("Clean Window Found")
                 print("\nDBSCAN is running.... ")
                 dbscan = DBSCAN_pipeline(dataset=self.data)
                 dbscan.fit_predict()
@@ -110,10 +113,11 @@ class Auto_Cluster:
             gmm_model = gmm_pipeline(data=self.data)
             gmm_model.fit_predict()
             best_k = gmm_model._find_optimal_components()
+            print(f"{best_k} components found by Gaussian Mixture")
             result_gmm = gmm_model.evaluate()
             self.scores['GMM'] = result_gmm
             if self.scores['GMM'] is None:
-                print("GMM: 0 valid clusters found — excluded from comparison")
+                print("Gaussian Mixture: 0 valid clusters found — excluded from comparison")
             pipelines['GMM'] = gmm_model
             gmm_model.plot()
 
@@ -138,5 +142,6 @@ class Auto_Cluster:
             agglomerative_model.plot_dendogram()
             
             best_name = self.best_model()
+            print("Automatic Model Selection Performed")
             
         return pipelines[best_name]

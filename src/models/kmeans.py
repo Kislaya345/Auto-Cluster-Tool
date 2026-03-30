@@ -1,8 +1,6 @@
 import os
 import sys
 from sklearn.cluster import KMeans
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
@@ -11,6 +9,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
     
 from src.evaluation.metrics import Evaluator
+from src.visualization.plots import _plot_2d
 
 class KMeansClustering_:
     def __init__(self, k=None, dataset=None):
@@ -34,18 +33,9 @@ class KMeansClustering_:
         return evaluation
     
     def plot(self):
-        pca = PCA(n_components=self.n_components)
-        X_pca = pca.fit_transform(self.dataset)
-        
-        plt.figure(figsize=(10, 6))
-        for label in set(self.labels):
-            mask = self.labels == label
-            plt.scatter(X_pca[mask, 0], X_pca[mask, 1],
-                       label=f'Cluster {label}', alpha=0.8, edgecolors='k')
-        
-        plt.title(f"GMM Clusters (n_components={self.n_components})")
-        plt.xlabel("PC1")
-        plt.ylabel("PC2")
-        plt.legend()
-        plt.grid(True, linestyle='--', alpha=0.6)
-        plt.show()
+        _plot_2d(
+            data=self.dataset,
+            labels=self.labels,
+            name="KMeans",
+            n_components=self.n_components
+        )

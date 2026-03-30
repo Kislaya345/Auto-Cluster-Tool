@@ -1,6 +1,4 @@
 from sklearn.mixture import GaussianMixture
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
 import numpy as np
 
 import sys
@@ -13,6 +11,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
     
 from src.evaluation.metrics import Evaluator
+from src.visualization.plots import _plot_2d
 
 class gmm_pipeline:
     def __init__(self, data):
@@ -64,18 +63,9 @@ class gmm_pipeline:
         return evaluation
     
     def plot(self):
-        pca = PCA(n_components=2)
-        X_pca = pca.fit_transform(self.dataset)
-        
-        plt.figure(figsize=(10, 6))
-        for label in set(self.labels):
-            mask = self.labels == label
-            plt.scatter(X_pca[mask, 0], X_pca[mask, 1],
-                       label=f'Cluster {label}', alpha=0.8, edgecolors='k')
-        
-        plt.title(f"GMM Clusters (n_components={self.n_components})")
-        plt.xlabel("PC1")
-        plt.ylabel("PC2")
-        plt.legend()
-        plt.grid(True, linestyle='--', alpha=0.6)
-        plt.show()
+        _plot_2d(
+            data=self.dataset,
+            labels=self.labels,
+            name="GMM",
+            n_components=self.n_components
+        )

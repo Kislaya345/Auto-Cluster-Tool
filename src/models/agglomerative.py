@@ -1,6 +1,4 @@
 from sklearn.cluster import AgglomerativeClustering
-from scipy.cluster.hierarchy import dendrogram, linkage
-import matplotlib.pyplot as plt
 
 import sys
 import os
@@ -12,6 +10,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
     
 from src.evaluation.metrics import Evaluator
+from src.visualization.plots import dendogram
 
 class AgglomerativeClustering_:
     def __init__(self, n_clusters, dataset=None):
@@ -31,11 +30,6 @@ class AgglomerativeClustering_:
         return evaluation
     
     def plot_dendogram(self):
-        linked = linkage(self.dataset, method='ward')
-        
-        plt.figure(figsize=(12, 6))
-        dendrogram(linked)
-        plt.title("Agglomerative Clustering Dendrogram")
-        plt.xlabel("Sample Index")
-        plt.ylabel("Distance")
-        plt.show()
+        dendogram(
+            data=self.dataset
+        )
