@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
 import numpy as np
 import math
+
+from sklearn.decomposition import PCA
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 def feature_dist_scatter_plot(dataframe, feature_names, bins):
     
@@ -29,49 +31,41 @@ def feature_correlation_plot(correlation_matrix, annot):
     sns.heatmap(correlation_matrix, annot=annot, cmap='coolwarm')
     plt.show()
     
-def _plot_3d(data, n_components, top_drivers, processor):
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection='3d')
-    
-    # Access the target data from the processor's dataset
-    target_data = processor.dataset[processor.target]
-    
-    scatter = ax.scatter(data[:, 0], data[:, 1], data[:, 2], 
-                         c=pd.Categorical(target_data).codes, 
-                         cmap='viridis', alpha=0.6)
-    
-    ax.set_title(f"3D Cluster View (Top 3 of {n_components} PCs)")
-    ax.set_xlabel(f"PC1: {top_drivers['PC1']}")
-    ax.set_ylabel(f"PC2: {top_drivers['PC2']}")
-    ax.set_zlabel(f"PC3: {top_drivers['PC3']}")
+def dendogram(data):
+    linked = linkage(data, method='ward')
+        
+    plt.figure(figsize=(12, 6))
+    dendrogram(linked)
+    plt.title("Agglomerative Clustering Dendrogram")
+    plt.xlabel("Sample Index")
+    plt.ylabel("Distance")
     plt.show()
 
-def _plot_2d(data, labels):
-    from sklearn.decomposition import PCA
-    pca = PCA(n_components=2)
+def _plot_2d(data, labels, name, n_components):
+    pca = PCA(n_components=n_components)
     X_pca = pca.fit_transform(data)
     
     plt.figure(figsize=(8, 6))
+    
+    
+    if name == "DBSCAN":
+        for label in set(labels):
+            mask = labels == label
+            color = 'black' if label == -1 else None  # noise points for DBSCAN
+            plt.scatter(X_pca[mask, 0], X_pca[mask, 1],
+                    label=f'Cluster {label}' if label != -1 else 'Noise',
+                    alpha=0.3 if label == -1 else 0.8,
+                    c=color, edgecolors='k')
+    
     for label in set(labels):
         mask = labels == label
         plt.scatter(X_pca[mask, 0], X_pca[mask, 1],
                    label=f'Cluster {label}', alpha=0.8, edgecolors='k')
-    plt.title("Best Model Clusters")
+    plt.title(f"{name} Clusters (n_components={n_components})")
     plt.xlabel("PC1")
     plt.ylabel("PC2")
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
-    plt.show()
-
-def _scree_plot(explained_variance_ratio, n_selected):
-    plt.figure(figsize=(8, 4))
-    cumulative_var = np.cumsum(explained_variance_ratio)
-    plt.plot(range(1, n_selected + 1), cumulative_var, marker='o', linestyle='--')
-    plt.axhline(y=0.95, color='r', linestyle=':')
-    plt.title("Cumulative Explained Variance (95% Threshold)")
-    plt.xlabel("Number of Components")
-    plt.ylabel("Variance Explained")
-    plt.grid(True, alpha=0.3)
     plt.show()
 
 def plot_comparision(scores: dict):
