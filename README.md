@@ -83,13 +83,24 @@ pip install -r requirements.txt
 ## Usage
  
 1. Add your CSV file anywhere on your system
+
+# Option 1 - Direct Run (VS Code)
 2. Update the path in main.py:
 ```markdown
 if __name__ == "__main__":
     main(path='path/to/your/dataset.csv', show_eda=True)
+    (either remove everything else in this block or comment it out)
 ```
 3. Run:
+```markdown
 python main.py
+```
+
+# Option 2 - Terminal with arguments
+2. Run:
+```markdown
+python main.py --path "path/to/your/dataset.csv" --eda True
+```
  
 The tool will automatically:
 - Run EDA on your data
