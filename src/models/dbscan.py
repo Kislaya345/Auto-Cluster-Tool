@@ -14,6 +14,7 @@ from src.visualization.plots import _plot_2d
 
 class DBSCAN_pipeline:
     def __init__(self, dataset=None):
+        self.model_name = "DBSCAN"
         self.dataset = dataset
     
     def fit_predict(self):

@@ -16,8 +16,9 @@ from src.visualization.plots import _plot_2d
 class gmm_pipeline:
     def __init__(self, data):
         self.dataset = data
+        self.model_name = "Gaussian Mixture Model (GMM)"
         self.n_components = self._find_optimal_components()
-        self.model = GaussianMixture(n_components=3, random_state=43)
+        self.model = GaussianMixture(n_components=self.n_components, random_state=43)
         self.labels = None
         
     def _find_optimal_components(self):
@@ -27,7 +28,7 @@ class gmm_pipeline:
         best_k = 2
         
         for k in range(2, 8):
-            gmm = GaussianMixture(n_components=k, random_state=43)
+            gmm = GaussianMixture(n_components=k, random_state=43, covariance_type="tied")
             gmm.fit(self.dataset)
             bic = gmm.bic(self.dataset)
             aic = gmm.aic(self.dataset)
@@ -38,6 +39,7 @@ class gmm_pipeline:
                 best_k = k
         
         print(f"Optimal components (k): {best_k}")
+        print(f"Optimal BIC (lowest BIC found for the dataset): {best_bic}")
         return best_k
     
     def fit_predict(self):
@@ -67,5 +69,5 @@ class gmm_pipeline:
             data=self.dataset,
             labels=self.labels,
             name="GMM",
-            n_components=self.n_components
+            n_components=2
         )

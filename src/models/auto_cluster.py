@@ -22,7 +22,7 @@ def has_clean_eps_window(X, min_samples=4, target_cluster=(2,4), window_size = 3
         labels = DBSCAN(min_samples=min_samples, eps=eps).fit_predict(X)
         n_clusters = len(set(labels) - {-1})
         noise_ratio = (labels == -1).sum() / len(X)
-        print(f"eps={eps:.1f} | clusters={n_clusters} | noise={round(noise_ratio*100, 1)}")
+        # print(f"eps={eps:.1f} | clusters={n_clusters} | noise={round(noise_ratio*100, 1)}")
         
         if target_cluster[0] <= n_clusters <= target_cluster[1] and noise_ratio < 0.15:
             stable_count += 1
@@ -86,9 +86,7 @@ class Auto_Cluster:
         for model, v in valid_scores.items():
             marker = " <-- BEST" if model == best else ""
             print(f"Model: {model} | Silhouette: {v['Silhouette_Score']:.4f} | DB: {v['Davies_Bouldin_Score']:.4f} | CH: {v['Calinski_Harabasz_Score']:.2f}{marker}")
-        
-        print(f"\nThe best model for the given dataset is {best}")
-            
+                    
         return best 
          
     def model_selector(self):
@@ -143,6 +141,12 @@ class Auto_Cluster:
             agglomerative_model.plot_dendogram()
             
             best_name = self.best_model()
+            best_pipeline = pipelines[best_name]
+            
             print("Automatic Model Selection Performed")
             
-        return pipelines[best_name]
+            print(f"\n--- Final Selection ---")
+            print(f"Model: {best_pipeline.model_name}")
+            
+            return pipelines[best_name]
+            

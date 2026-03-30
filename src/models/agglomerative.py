@@ -14,6 +14,7 @@ from src.visualization.plots import dendogram
 
 class AgglomerativeClustering_:
     def __init__(self, n_clusters, dataset=None):
+        self.model_name = "Agglomerative Clustering"
         self.n_clusters = n_clusters
         self.metric = 'euclidean'
         self.linkage = 'ward'

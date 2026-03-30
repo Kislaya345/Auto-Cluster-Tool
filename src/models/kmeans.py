@@ -14,6 +14,7 @@ from src.visualization.plots import _plot_2d
 class KMeansClustering_:
     def __init__(self, k=None, dataset=None):
         self.k = k
+        self.model_name = "KMeans Clustering"
         self.model = KMeans(n_clusters=self.k, n_init=10)
         self.labels = None
         self.dataset = dataset
