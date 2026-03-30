@@ -1,8 +1,5 @@
 import csv
-import sys
-import os
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
@@ -104,5 +101,6 @@ class Preprocess:
         self.X_dataframe = self.processed_df
         self.feature_columns = self.processed_df.columns.tolist()
         
-        print("Preprocessing done")
+        print("\n Preprocessing: Done")
+        
         return self.processed_df

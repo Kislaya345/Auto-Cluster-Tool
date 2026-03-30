@@ -13,6 +13,7 @@ class Load_Data:
         if os.path.exists(path):
             self.path = path
             self.dataset = pd.read_csv(path)
+            print("\n Loading Dataset: Done")
             return self.dataset
         else:
             return FileNotFoundError(f"File is not found at {path}")

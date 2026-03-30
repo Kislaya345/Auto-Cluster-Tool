@@ -2,7 +2,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import PowerTransformer, StandardScaler
+from sklearn.preprocessing import StandardScaler
 
 # 1. Get the directory of the current file (src/features)
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -50,5 +50,7 @@ class Feature_Engineer:
             self.data[col] = scaler.fit_transform(self.data[[col]])
         
         self.feature_engineered_df_cols = self.data.columns.to_list()
+        
+        print("\n Feature Engineering: Done")
                 
         return self.data
