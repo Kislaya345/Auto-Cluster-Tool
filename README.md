@@ -1,22 +1,15 @@
-```markdown
 ### Auto Cluster Tool
 > A general-purpose unsupervised ML pipeline that automatically selects the best clustering algorithm for any dataset - no manual tuning required.
-```
 
-```markdown
 ![Python](https://img.shields.io/badge/Python-3.10-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-```
 
-```markdown
 ## Overview -
 Most clustering workflows require domain expertise to pick the right algorithm 
 and tune its parameters. Auto Cluster Tool eliminates that bottleneck by 
 automatically selecting and tuning the best algorithm for any dataset.
-```
- 
-```markdown
+
 ## Features
 - Automatic algorithm selection (DBSCAN, GMM, KMeans, Agglomerative)
 - Hopkins Statistic to detect if data is even clusterable
@@ -24,16 +17,12 @@ automatically selecting and tuning the best algorithm for any dataset.
 - Model comparison via Silhouette + Davies-Bouldin scoring
 - EDA module with distribution, correlation, and outlier analysis
 - Works on any CSV dataset — no code changes needed
-```
 
-```markdown
 ## Architecture
  
 Input CSV → Load & Validate → EDA → Preprocessing → Feature Engineering
     → Hopkins Check → Density Sweep → Run All Algorithms → Score & Select → Plot
-```
 
-```markdown
 ## Tech Stack
  
 | Tool | Purpose |
@@ -43,9 +32,7 @@ Input CSV → Load & Validate → EDA → Preprocessing → Feature Engineering
 | pandas / numpy | Data manipulation |
 | matplotlib / seaborn | Visualization |
 | kneed | Automatic knee detection for DBSCAN |
-```
 
-```markdown
 ## Project Structure
  
 Auto-Cluster-Tool/
@@ -71,7 +58,6 @@ Auto-Cluster-Tool/
 ├── requirements.txt
 └── REA
 
-```markdown
 ## Installation
  
 1. Clone the repository
@@ -85,9 +71,7 @@ source venv/bin/activate     # Mac/Linux
  
 3. Install dependencies
 pip install -r requirements.txt
-```
 
-```markdown
 ## Usage
  
 1. Add your CSV file anywhere on your system
@@ -104,9 +88,7 @@ The tool will automatically:
 - Select the best clustering algorithm
 - Print model comparison scores
 - Display cluster visualization
-```
 
-```markdown
 ## Results
  
 ### Model Comparison on Iris Dataset
@@ -118,9 +100,7 @@ The tool will automatically:
 | **Winner** | **KMeans** | |
  
 [Insert cluster plot screenshot here]
-```
 
-```markdown
 ## Design Decisions
  
 **Why PCA inside the pipeline, not feature engineering?**
@@ -138,26 +118,16 @@ more clusters with tighter boundaries.
 Silhouette favors convex, equally-sized clusters (biased toward KMeans).
 Davies-Bouldin has different geometric assumptions. Using both together 
 cancels out individual biases for a fairer comparison.
-```
 
-```markdown
 ## Limitations
 - DBSCAN performs poorly on datasets with uniform density (e.g., wine dataset)
 - Hopkins Statistic uses random sampling — results may vary slightly on small datasets
 - Current EDA is exploratory only — no automated feature selection
 - Not optimized for datasets with >100k rows
-```
 
-```markdown
 ## Roadmap
 - [ ] Docker containerization + FastAPI serving
 - [ ] HDBSCAN support for variable density clustering  
 - [ ] Interactive HTML report output
 - [ ] Support for non-CSV formats (Excel, Parquet)
 - [ ] Automated dataset profiling report
-```
-
-```markdown
-## License
-MIT License — free to use, modify, and distribute.
-```
