@@ -81,7 +81,6 @@ pip install -r requirements.txt
  
 if __name__ == "__main__":
     main(path='path/to/your/dataset.csv', show_eda=True)
-          ^ (update here)
 3. Run:
 python main.py
  
