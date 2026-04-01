@@ -97,8 +97,7 @@ python main.py
 ```
 
 # Option 2 - Terminal with arguments
-Important: Dependencies should be installed first (check Installation)
-2. Run:
+Important: Dependencies should be installed first (check Installation) after then run the following command
 ```markdown
 python main.py --path "path/to/your/dataset.csv" --eda True
 ```
